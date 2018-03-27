@@ -10,7 +10,7 @@ import os
 import random
 import pickle
 import traceback
-class parallel_runner():
+class MultiRunner():
     def __init__(self,ini_dir="./ini/",result_dir="./results/",max_error_times=5,if_log=False):
         if ini_dir[-1]!="/":
             ini_dir+="/"
@@ -46,14 +46,14 @@ class parallel_runner():
         if self.if_log:
             print "All "+str(count)+" ini files generated."
         
-    def find_files(self,_type):
+    def _find_files(self,_type):
         all_files=filter(lambda x:x[0]!=".",os.listdir(self.ini_dir))
         return filter(lambda x:x[-len(_type):]==_type,all_files)
         
-    def return_a_para(self):
+    def _return_a_para(self):
         this_para=[]
-        while(this_para==[] and len(self.find_files("_to_run"))>0):
-            choises=self.find_files("_to_run")
+        while(this_para==[] and len(self._find_files("_to_run"))>0):
+            choises=self._find_files("_to_run")
             if len(choises)==0:
                 return [],-1
             else:
@@ -67,8 +67,8 @@ class parallel_runner():
                     pass
                 
         #below is for this situation: 3 node is running, node 1 is very slow and  node 2 3 are fast,only 1 job running in node1
-        while(this_para==[] and len(self.find_files("_running"))>0 and len(self.find_files("_to_run"))==0):
-            choises=self.find_files("running")
+        while(this_para==[] and len(self._find_files("_running"))>0 and len(self._find_files("_to_run"))==0):
+            choises=self._find_files("running")
             this_choise=choises[random.randint(0,len(choises)-1)]
             this_para=pickle.load(open(self.ini_dir+this_choise,"r"))
             return this_para,self.ini_dir+this_choise
@@ -92,7 +92,7 @@ class parallel_runner():
                 print "Use gpu: "+str(num)
 
         while(error_time<self.max_error_times): 
-            find_a_para,para_path=self.return_a_para()
+            find_a_para,para_path=self._return_a_para()
             if find_a_para==[]:
                 if self.if_log:
                     print "All finished, no new task to run."

@@ -1,6 +1,6 @@
 # author:Statham
 # time:2018-03-21
-# email:statham.stone@gmail.com
+# email:statham dot stone at gmail.com
 # This package is dedicated to my girlfriend 10L.
 # ALL RIGHTS RESERVED
 

@@ -11,7 +11,7 @@ import random
 import pickle
 import traceback
 class MultiRunner():
-    def __init__(self,ini_dir="./ini/",result_dir="./results/",max_error_times=5,if_log=False):
+    def __init__(self,ini_dir="./ini/",result_dir="./results/",max_error_times=5,if_log=True):
         if ini_dir[-1]!="/":
             ini_dir+="/"
         if result_dir[-1]!="/":

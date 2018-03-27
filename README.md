@@ -1,6 +1,6 @@
 # MultiRunner说明文档
 
-这是一个用于python多任务并行的包，可用于多进程，深度学习调参等，可通过 pip install MultiRunner 安装
+这是一个进程级别的python并行框架，可用于深度学习调参等任务，可通过 pip install MultiRunner 安装
 
 **注意，本包的使用极度简洁，原代码完全无需改动，使用本包的时候，包含import语句在内，仅需加入四行代码。**
 

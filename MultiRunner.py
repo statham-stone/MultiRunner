@@ -23,7 +23,17 @@ class MultiRunner():
         if not os.path.exists(self.result_dir):
             os.mkdir(self.result_dir)
         self.if_log=if_log
-    
+
+    def _get_ini_handle(self):
+        os.mknod(self.ini_dir+"generate_ini_handle_prepara"):
+        if os.path.exists(self.ini_dir+"generate_ini_handle_got"):
+            return 0            
+        try:
+            os.rename(self.ini_dir+"generate_ini_handle_prepara",self.ini_dir+"generate_ini_handle_got")
+            return 1
+        except Exception:
+            return 0    
+
     def generate_ini(self,args_list,reserve_old_ini=True,show_ini=False):
         if not os.path.exists(self.ini_dir):
             os.mkdir(self.ini_dir)
@@ -38,12 +48,19 @@ class MultiRunner():
                         print("There are old ini files to be deleted.\nPlease delete the old ini files manually and try again.")
                     return
         count=1
+        if self._get_ini_handle()==0:
+            return
+
         for i in itertools.product(*args_list):
             if show_ini:
                 print(i)
             pickle.dump(i,open(self.ini_dir+str(count)+"_to_run","w"))
             count+=1
         count-=1
+        
+        os.remove(self.ini_dir+"generate_ini_handle_got")
+        if os.path.exists(self.ini_dir+"generate_ini_handle_prepara"):
+            os.remove(self.ini_dir+"generate_ini_handle_prepara")
         if self.if_log:
             print("All "+str(count)+" ini files generated.")
         

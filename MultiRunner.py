@@ -9,7 +9,7 @@ import os
 import pickle
 import random
 import traceback
-
+import time
 
 class MultiRunner():
     def __init__(self,ini_dir="./ini/",result_dir="./results/",max_error_times=5,if_log=True):
@@ -93,7 +93,7 @@ class MultiRunner():
         
         return [],-1
     
-    def run(self,main_function,if_torch_use_best_nvidia_gpu=0):
+    def run(self,main_function,if_torch_use_best_nvidia_gpu=0,error_wait_time=10):
         error_time=0
         import numpy as np  
         if if_torch_use_best_nvidia_gpu:       
@@ -137,6 +137,7 @@ class MultiRunner():
                         print("Error info:")
                         traceback.print_exc()
                         print("Error! Total error times: "+str(error_time))
+                        time.sleep(error_wait_time*random.random())
                     try:
                         os.rename(para_path,para_path[:-8]+"_to_run")
                         if self.if_log:

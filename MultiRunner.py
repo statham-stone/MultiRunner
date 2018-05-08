@@ -25,11 +25,11 @@ class MultiRunner():
         self.if_log=if_log
 
     def _get_ini_handle(self):
-        os.mknod(self.ini_dir+"generate_ini_handle_prepara")
+        os.mknod(self.ini_dir+"generate_ini_handle_prepare")
         if os.path.exists(self.ini_dir+"generate_ini_handle_got"):
             return 0            
         try:
-            os.rename(self.ini_dir+"generate_ini_handle_prepara",self.ini_dir+"generate_ini_handle_got")
+            os.rename(self.ini_dir+"generate_ini_handle_prepare",self.ini_dir+"generate_ini_handle_got")
             return 1
         except Exception:
             return 0    
@@ -59,8 +59,8 @@ class MultiRunner():
         count-=1
         
         os.remove(self.ini_dir+"generate_ini_handle_got")
-        if os.path.exists(self.ini_dir+"generate_ini_handle_prepara"):
-            os.remove(self.ini_dir+"generate_ini_handle_prepara")
+        if os.path.exists(self.ini_dir+"generate_ini_handle_prepare"):
+            os.remove(self.ini_dir+"generate_ini_handle_prepare")
         if self.if_log:
             print("All "+str(count)+" ini files generated.")
         

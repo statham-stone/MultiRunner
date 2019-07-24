@@ -95,9 +95,9 @@ class MultiRunner():
     
     def run(self,main_function,if_torch_use_best_nvidia_gpu=0,error_wait_time=10):
         error_time=0
-        import numpy as np  
         if if_torch_use_best_nvidia_gpu:       
             import torch
+            import numpy as np
         if if_torch_use_best_nvidia_gpu and torch.cuda.is_available():
             all_lines=[]
             all_percent=[]

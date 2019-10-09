@@ -1,11 +1,10 @@
 Metadata-Version: 1.0
 Name: MultiRunner
-Version: 4.6
+Version: 4.7
 Summary: This is a python package for multi-process running.
 Home-page: https://github.com/Statham-stone/MultiRunner
 Author: Statham
 Author-email: statham.stone@gmail.com
 License: UNKNOWN
-Description-Content-Type: UNKNOWN
-Description: This is a package for multi-process running, dedicated to my girlfriend 10L
+Description: This is a package for multi-process running..
 Platform: UNKNOWN

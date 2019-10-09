@@ -3,5 +3,6 @@
 *.ipynb
 *.pyc
 setup.py
+.gitignore
 /dist
 /MultiRunner.egg-info

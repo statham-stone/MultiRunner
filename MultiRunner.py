@@ -1,5 +1,5 @@
 # author:Statham
-# time:2018-03-21
+# updated:2019-10-09
 # email:statham dot stone at gmail DOTcom
 # ALL RIGHTS RESERVED
 
@@ -26,12 +26,12 @@ class MultiRunner():
     def _get_ini_handle(self):
         os.mknod(self.ini_dir+"generate_ini_handle_prepara")
         if os.path.exists(self.ini_dir+"generate_ini_handle_got"):
-            return 0            
+            return 0
         try:
             os.rename(self.ini_dir+"generate_ini_handle_prepara",self.ini_dir+"generate_ini_handle_got")
             return 1
         except Exception:
-            return 0    
+            return 0
 
     def generate_ini(self,args_list,reserve_old_ini=True,show_ini=False):
         if not os.path.exists(self.ini_dir):
@@ -56,17 +56,17 @@ class MultiRunner():
             pickle.dump(i,open(self.ini_dir+str(count)+"_to_run","wb"))
             count+=1
         count-=1
-        
+
         os.remove(self.ini_dir+"generate_ini_handle_got")
         if os.path.exists(self.ini_dir+"generate_ini_handle_prepara"):
             os.remove(self.ini_dir+"generate_ini_handle_prepara")
         if self.if_log:
             print("All "+str(count)+" ini files generated.")
-        
+
     def _find_files(self,_type):
         all_files=filter(lambda x:x[0]!=".",os.listdir(self.ini_dir))
         return list(filter(lambda x:x[-len(_type):]==_type,all_files))
-        
+
     def _return_a_para(self):
         this_para=[]
         while(this_para==[] and len(self._find_files("_to_run"))>0):
@@ -77,38 +77,24 @@ class MultiRunner():
                 my_choise=choises[random.randint(0,len(choises)-1)]
                 new_name=self.ini_dir+my_choise[:-7]+"_running"
                 try:
-                    os.rename(self.ini_dir+my_choise,new_name)      
+                    os.rename(self.ini_dir+my_choise,new_name)
                     this_para=pickle.load(open(new_name,"rb"))
                     return this_para,new_name
                 except OSError:
                     pass
-                
+
         #below is for this situation: 3 node is running, node 1 is very slow and  node 2 3 are fast,only 1 job running in node1
         while(this_para==[] and len(self._find_files("_running"))>0 and len(self._find_files("_to_run"))==0):
             choises=self._find_files("running")
             this_choise=choises[random.randint(0,len(choises)-1)]
             this_para=pickle.load(open(self.ini_dir+this_choise,"r"))
             return this_para,self.ini_dir+this_choise
-        
-        return [],-1
-    
-    def run(self,main_function,if_torch_use_best_nvidia_gpu=0,error_wait_time=10):
-        error_time=0
-        if if_torch_use_best_nvidia_gpu:       
-            import torch
-            import numpy as np
-        if if_torch_use_best_nvidia_gpu and torch.cuda.is_available():
-            all_lines=[]
-            all_percent=[]
-            for i in os.popen("nvidia-smi"):
-                all_lines.append(i)
-            all_lines=filter(lambda x:x.find("MiB")>-1,all_lines)
-            num=np.array(map(lambda y:float(y[0][:-3])/float(y[1][:-3]),filter(lambda j:len(j)==2,map(lambda x:filter(lambda k:k.find("MiB")>-1,x.split(" ")),all_lines)))).argmin()
-            torch.cuda.set_device(num)
-            if self.if_log:
-                print("Use gpu: "+str(num))
 
-        while(error_time<self.max_error_times): 
+        return [],-1
+
+    def run(self,main_function,error_wait_time=10):
+        error_time=0
+        while(error_time<self.max_error_times):
             find_a_para,para_path=self._return_a_para()
             if find_a_para==[]:
                 if self.if_log:
@@ -126,7 +112,7 @@ class MultiRunner():
                             os.rename(para_path,para_path[:-8]+"_finished")
                         except Exception:
                             try:
-                                os.rename(para_path[:-8]+"_to_run",para_path[:-8]+"_finished") 
+                                os.rename(para_path[:-8]+"_to_run",para_path[:-8]+"_finished")
                             except Exception:
                                 pass
 
@@ -144,7 +130,18 @@ class MultiRunner():
                     except Exception: #changed to finished or torun by others
                         if self.if_log:
                             print("This job is already done or reverted by others")
-                    
+
             if error_time>=self.max_error_times:
                 if self.if_log:
                     print("Too many error times, break.")
+
+
+def find_best_gpu():
+    all_lines=[]
+    for i in os.popen("nvidia-smi"):
+        all_lines.append(i)
+    all_lines=filter(lambda x:x.find("MiB")>-1,all_lines)
+    num=np.array(map(lambda y:float(y[0][:-3])/float(y[1][:-3]),filter(lambda j:len(j)==2,map(lambda x:filter(lambda k:k.find("MiB")>-1,x.split(" ")),all_lines)))).argmin()
+    if self.if_log:
+        print("Best gpu: "+str(num))
+    return int(num)

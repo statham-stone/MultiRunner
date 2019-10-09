@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 setup(
-    name = "MultiRunner",
+    name =   "MultiRunner",
     version = "4.6",
     description= "This is a python package for multi-process running.",
     long_description= "This is a package for multi-process running, dedicated to my girlfriend 10L",

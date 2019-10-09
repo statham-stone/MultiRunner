@@ -1,0 +1,7 @@
+/ini
+/results
+*.ipynb
+*.pyc
+setup.py
+/dist
+/MultiRunner.egg-info

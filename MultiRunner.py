@@ -25,11 +25,11 @@ class MultiRunner():
         self.if_log=if_log
 
     def _get_ini_handle(self):
-        os.mknod(self.ini_dir+"generate_ini_handle_prepare")
+        os.mknod(self.ini_dir+"generate_ini_handle_prepara")
         if os.path.exists(self.ini_dir+"generate_ini_handle_got"):
             return 0            
         try:
-            os.rename(self.ini_dir+"generate_ini_handle_prepare",self.ini_dir+"generate_ini_handle_got")
+            os.rename(self.ini_dir+"generate_ini_handle_prepara",self.ini_dir+"generate_ini_handle_got")
             return 1
         except Exception:
             return 0    
@@ -54,19 +54,19 @@ class MultiRunner():
         for i in itertools.product(*args_list):
             if show_ini:
                 print(i)
-            pickle.dump(i,open(self.ini_dir+str(count)+"_to_run","w"))
+            pickle.dump(i,open(self.ini_dir+str(count)+"_to_run","wb"))
             count+=1
         count-=1
         
         os.remove(self.ini_dir+"generate_ini_handle_got")
-        if os.path.exists(self.ini_dir+"generate_ini_handle_prepare"):
-            os.remove(self.ini_dir+"generate_ini_handle_prepare")
+        if os.path.exists(self.ini_dir+"generate_ini_handle_prepara"):
+            os.remove(self.ini_dir+"generate_ini_handle_prepara")
         if self.if_log:
             print("All "+str(count)+" ini files generated.")
         
     def _find_files(self,_type):
         all_files=filter(lambda x:x[0]!=".",os.listdir(self.ini_dir))
-        return filter(lambda x:x[-len(_type):]==_type,all_files)
+        return list(filter(lambda x:x[-len(_type):]==_type,all_files))
         
     def _return_a_para(self):
         this_para=[]
@@ -79,7 +79,7 @@ class MultiRunner():
                 new_name=self.ini_dir+my_choise[:-7]+"_running"
                 try:
                     os.rename(self.ini_dir+my_choise,new_name)      
-                    this_para=pickle.load(open(new_name,"r"))
+                    this_para=pickle.load(open(new_name,"rb"))
                     return this_para,new_name
                 except OSError:
                     pass
@@ -122,7 +122,7 @@ class MultiRunner():
                         if self.if_log:
                             print("This job is already done by others")
                     else:# maybe running by others at the same time
-                        pickle.dump(result,open(self.result_dir+para_path[len(self.ini_dir):-8],"w"))
+                        pickle.dump(result,open(self.result_dir+para_path[len(self.ini_dir):-8],"wb"))
                         try:
                             os.rename(para_path,para_path[:-8]+"_finished")
                         except Exception:

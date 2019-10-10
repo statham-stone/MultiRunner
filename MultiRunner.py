@@ -87,7 +87,7 @@ class MultiRunner():
         while(this_para==[] and len(self._find_files("_running"))>0 and len(self._find_files("_to_run"))==0):
             choises=self._find_files("running")
             this_choise=choises[random.randint(0,len(choises)-1)]
-            this_para=pickle.load(open(self.ini_dir+this_choise,"r"))
+            this_para=pickle.load(open(self.ini_dir+this_choise,"rb"))
             return this_para,self.ini_dir+this_choise
 
         return [],-1
@@ -137,10 +137,11 @@ class MultiRunner():
 
 
 def find_best_gpu():
-    import numpy as np
     all_lines=[]
     for i in os.popen("nvidia-smi"):
         all_lines.append(i)
-    all_lines=filter(lambda x:x.find("MiB")>-1,all_lines)
-    num=np.array(map(lambda y:float(y[0][:-3])/float(y[1][:-3]),filter(lambda j:len(j)==2,map(lambda x:filter(lambda k:k.find("MiB")>-1,x.split(" ")),all_lines)))).argmin()
-    return int(num)
+    all_lines=list(filter(lambda x:x.find("MiB")>-1,all_lines))
+    nums=list(map(lambda y:float(y[0][:-3])/float(y[1][:-3]),list(filter(lambda j:len(j)==2,list(map(lambda x:list(filter(lambda k:k.find("MiB")>-1,x.split(" "))),all_lines))))))
+    min_nums=min(nums)
+    min_nums=list(filter(lambda x:nums[x]==min_nums,range(len(nums))))
+    return min_nums[random.randint(0,len(min_nums)-1)]

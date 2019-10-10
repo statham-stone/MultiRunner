@@ -137,11 +137,10 @@ class MultiRunner():
 
 
 def find_best_gpu():
+    import numpy as np
     all_lines=[]
     for i in os.popen("nvidia-smi"):
         all_lines.append(i)
     all_lines=filter(lambda x:x.find("MiB")>-1,all_lines)
     num=np.array(map(lambda y:float(y[0][:-3])/float(y[1][:-3]),filter(lambda j:len(j)==2,map(lambda x:filter(lambda k:k.find("MiB")>-1,x.split(" ")),all_lines)))).argmin()
-    if self.if_log:
-        print("Best gpu: "+str(num))
     return int(num)
